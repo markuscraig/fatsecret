@@ -58,6 +58,13 @@ func main() {
 		fmt.Printf("BRAND STARTS WITH: name = %s\n", b)
 	}
 
+	// find the food id for a barcode
+	foodID, err := client.FoodIDForBarcode("0748927052688")
+	if err != nil {
+		fmt.Printf("Could not fetch brands by type")
+	}
+	fmt.Printf("\nFOOD ID FOR BARCODE: id = %v\n", foodID)
+
 	// invoke the raw low-level api (used by all higher-level api's)
 	body, err := client.InvokeAPI(
 		"food_brands.get",
