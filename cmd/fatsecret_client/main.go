@@ -16,7 +16,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/fithubio/fatsecret"
+	"github.com/fitzone/fatsecret"
 )
 
 var (
@@ -58,6 +58,15 @@ func main() {
 		fmt.Printf("BRAND STARTS WITH: name = %s\n", b)
 	}
 
+	// search for brands starting with a letter (use '*' for starting with numbers)
+	categories, err := client.FoodCategories()
+	if err != nil {
+		fmt.Printf("Could not fetch food categories")
+	}
+	for _, cat := range categories {
+		fmt.Printf("CATEGORY: name = %s\n", cat.Name)
+	}
+
 	// find the food id for a barcode
 	foodID, err := client.FoodIDForBarcode("0748927052688")
 	if err != nil {
@@ -73,7 +82,7 @@ func main() {
 		},
 	)
 	if err != nil {
-		fmt.Printf("Cannot fetch food from API: err = '%v'", err)
+		fmt.Printf("Cannot fetch food brands from API: err = '%v'", err)
 	}
 	fmt.Printf("\nBODY = %v\n", string(body))
 }
