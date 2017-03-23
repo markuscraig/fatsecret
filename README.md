@@ -26,6 +26,9 @@ $ go run cmd/fs2json/main.go -method foods.search -params search_expression=coff
 # list the food categories
 $ go run cmd/fs2json/main.go -method food_categories.get
 
+# list the food sub-categories for a category
+$ go run cmd/fs2json/main.go -method food_sub_categories.get -params food_category_id=16 | jq .
+
 # auto-complete
 $ go run cmd/fs2json/main.go -method foods.autocomplete -params expression=chic | jq .
 

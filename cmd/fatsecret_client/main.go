@@ -58,13 +58,23 @@ func main() {
 		fmt.Printf("BRAND STARTS WITH: name = %s\n", b)
 	}
 
-	// search for brands starting with a letter (use '*' for starting with numbers)
+	// get the list of food categories
 	categories, err := client.FoodCategories()
 	if err != nil {
 		fmt.Printf("Could not fetch food categories")
 	}
 	for _, cat := range categories {
-		fmt.Printf("CATEGORY: name = %s\n", cat.Name)
+		fmt.Printf("CATEGORY: id = '%s', name = '%s'\n", cat.ID, cat.Name)
+	}
+
+	// get the list of food sub-categories for a category
+	categoryID := "16" // desserts
+	subs, err := client.FoodSubCategories(categoryID)
+	if err != nil {
+		fmt.Printf("Could not fetch food sub-categories")
+	}
+	for _, s := range subs {
+		fmt.Printf("SUB-CATEGORY: name = %s\n", s)
 	}
 
 	// find the food id for a barcode
