@@ -24,7 +24,16 @@ Use the 'fs2json' cli tool to invoke FatSecret API calls and dump the JSON respo
 $ go run cmd/fs2json/main.go -method foods.search -params search_expression=coffee | jq .
 
 # list the food categories
-go run cmd/fs2json/main.go -method food_categories.get
+$ go run cmd/fs2json/main.go -method food_categories.get
+
+# auto-complete
+$ go run cmd/fs2json/main.go -method foods.autocomplete -params expression=chic | jq .
+
+# find food-id by barcode
+$ go run cmd/fs2json/main.go -method food.find_id_for_barcode -params barcode=0748927052688 | jq .
+
+# get food info by id
+$ go run cmd/fs2json/main.go -method food.get -params food_id=2415647 | jq .
 ```
 
 ## References

@@ -74,6 +74,13 @@ func main() {
 	}
 	fmt.Printf("\nFOOD ID FOR BARCODE: id = %v\n", foodID)
 
+	// find the detailed food info by id
+	foodInfo, err := client.FoodByID("2415647")
+	if err != nil {
+		fmt.Printf("Could not fetch food info")
+	}
+	fmt.Printf("\nFOOD INFO: %+v\n", foodInfo)
+
 	// invoke the raw low-level api (used by all higher-level api's)
 	body, err := client.InvokeAPI(
 		"food_brands.get",
