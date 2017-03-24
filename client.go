@@ -16,8 +16,7 @@ import (
 )
 
 const (
-	// fatsecret api url's
-	FAT_SECRET_API_URL = "http://platform.fatsecret.com/rest/server.api"
+	fatSecretAPIURL = "http://platform.fatsecret.com/rest/server.api"
 )
 
 // Client is the top-level FatSecret client which is used to
@@ -44,8 +43,8 @@ func NewClient(consumerKey string, sharedSecret string) (*Client, error) {
 	return &Client{
 		consumerKey:   consumerKey,
 		sharedSecret:  sharedSecret,
-		apiURL:        FAT_SECRET_API_URL,
-		escapedAPIURL: url.QueryEscape(FAT_SECRET_API_URL),
+		apiURL:        fatSecretAPIURL,
+		escapedAPIURL: url.QueryEscape(fatSecretAPIURL),
 		randSrc:       rand.NewSource(time.Now().UnixNano()),
 	}, nil
 }

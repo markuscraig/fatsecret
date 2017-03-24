@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	FatSecretBarcodeLength = 13
+	fatSecretBarcodeLength = 13
 )
 
 type FoodSearchItem struct {
@@ -123,12 +123,12 @@ func (c *Client) FoodSearch(query string) ([]FoodSearchItem, error) {
 func (c *Client) FoodIDForBarcode(barcode string) (string, error) {
 	// if the barcode is invalid
 	barcodeLen := len(barcode)
-	if barcodeLen == 0 || barcodeLen > FatSecretBarcodeLength {
+	if barcodeLen == 0 || barcodeLen > fatSecretBarcodeLength {
 		return "", fmt.Errorf("Invalid barcode length '%d' given", barcodeLen)
 	}
 
 	// pad the barcode to GTIN-13 format
-	barcode = PadLeft(barcode, FatSecretBarcodeLength, "0")
+	barcode = padLeft(barcode, fatSecretBarcodeLength, "0")
 
 	// invoke the api call
 	body, err := c.InvokeAPI(

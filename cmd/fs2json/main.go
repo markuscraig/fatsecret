@@ -39,7 +39,7 @@ func main() {
 			tokens := strings.Split(p, "=")
 			if len(tokens) != 2 {
 				fmt.Printf("\nInvalid API name/value parameter given ('%v'). Must use format 'name=value'.\n\n", p)
-				os.Exit(1)
+				return
 			}
 			params[tokens[0]] = tokens[1]
 		}
@@ -54,7 +54,7 @@ func main() {
 	// invoke the low-level fatsecret api
 	body, err := client.InvokeAPI(*methodPtr, params)
 	if err != nil {
-		fmt.Printf("Error invoking the '%s' FatSecret API: err = '%v'", *methodPtr, err)
+		fmt.Printf("\nError invoking the '%s' FatSecret API: err = '%v'\n\n", *methodPtr, err)
 	} else {
 		// dump the api json response
 		fmt.Println(string(body))
