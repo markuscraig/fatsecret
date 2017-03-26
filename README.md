@@ -5,7 +5,7 @@ Will eventually implement all of the FatSecret API.
 You must set the following environment variables in order to access the FatSecret API...
 
 1. `"FATSECRET_CONSUMER_KEY"`
-2. `"FATSECRET_SHARED_SECRET"`
+2. `"FATSECRET_CONSUMER_SECRET"`
 
 ## FatSecret Client Example
 
@@ -28,6 +28,9 @@ $ go run cmd/fs2json/main.go -method food_categories.get
 
 # list the food sub-categories for a category
 $ go run cmd/fs2json/main.go -method food_sub_categories.get -params food_category_id=16 | jq .
+
+# list the brands for a brand-type
+$ go run cmd/fs2json/main.go -method food_brands.get -params brand_type=manufacturer | jq .
 
 # auto-complete
 $ go run cmd/fs2json/main.go -method foods.autocomplete -params expression=chic | jq .

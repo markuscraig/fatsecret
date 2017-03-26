@@ -1,9 +1,6 @@
 package fatsecret
 
 import (
-	"crypto/hmac"
-	"crypto/sha1"
-	"encoding/base64"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -22,30 +19,32 @@ const (
 // Client is the top-level FatSecret client which is used to
 // fetch data from the FatSecret API using Oauth1 authentication
 type Client struct {
-	consumerKey   string
-	sharedSecret  string
-	apiURL        string
-	escapedAPIURL string
-	randSrc       rand.Source
+	consumerKey    string
+	consumerSecret string
+	apiURL         string
+	escapedAPIURL  string
+	randSrc        rand.Source
+	signer         Signer
 }
 
 // NewClient creates and returns a new FatSecret client instance
-func NewClient(consumerKey string, sharedSecret string) (*Client, error) {
+func NewClient(consumerKey string, consumerSecret string) (*Client, error) {
 	// validate the given key and secret
 	if consumerKey == "" {
 		return nil, errors.New("Invalid consumer key given")
 	}
-	if sharedSecret == "" {
+	if consumerSecret == "" {
 		return nil, errors.New("Invalid consumer key given")
 	}
 
 	// return the new client
 	return &Client{
-		consumerKey:   consumerKey,
-		sharedSecret:  sharedSecret,
-		apiURL:        fatSecretAPIURL,
-		escapedAPIURL: url.QueryEscape(fatSecretAPIURL),
-		randSrc:       rand.NewSource(time.Now().UnixNano()),
+		consumerKey:    consumerKey,
+		consumerSecret: consumerSecret,
+		apiURL:         fatSecretAPIURL,
+		escapedAPIURL:  url.QueryEscape(fatSecretAPIURL),
+		randSrc:        rand.NewSource(time.Now().UnixNano()),
+		signer:         NewHMACSigner(consumerSecret),
 	}, nil
 }
 
@@ -114,10 +113,14 @@ func (c *Client) buildURL(apiMethod string, params map[string]string) (string, e
 	sigQuery = sigEscape(sigQuery[1:])
 	sigBase := fmt.Sprintf("GET&%s&%s", c.escapedAPIURL, sigQuery)
 
-	// generate the oauth sha1 base64 signature
-	mac := hmac.New(sha1.New, []byte(c.sharedSecret+"&"))
-	mac.Write([]byte(sigBase))
-	oauthSig := base64.StdEncoding.EncodeToString(mac.Sum(nil))
+	// generate the oauth sha1 base64 signature (no token key)
+	oauthSig := c.signer.Sign("", sigBase)
+	/*
+		// generate the oauth sha1 base64 signature
+		mac := hmac.New(sha1.New, []byte(c.consumerSecret+"&"))
+		mac.Write([]byte(sigBase))
+		oauthSig := base64.StdEncoding.EncodeToString(mac.Sum(nil))
+	*/
 
 	// add the oauth signature to the map
 	m["oauth_signature"] = oauthSig
@@ -140,5 +143,13 @@ func (c *Client) buildURL(apiMethod string, params map[string]string) (string, e
 
 // escape the given string using url-escape plus some extras
 func sigEscape(s string) string {
-	return strings.Replace(strings.Replace(url.QueryEscape(s), "+", "%20", -1), "%7E", "~", -1)
+	s = url.QueryEscape(s)
+	s = strings.Replace(s, "%7E", "~", -1)
+	s = strings.Replace(s, "+", "%20", -1)
+	s = strings.Replace(s, "!", "%21", -1)
+	s = strings.Replace(s, "\\", "%27", -1)
+	s = strings.Replace(s, "(", "%28", -1)
+	s = strings.Replace(s, ")", "%29", -1)
+	s = strings.Replace(s, "*", "%2A", -1)
+	return s
 }

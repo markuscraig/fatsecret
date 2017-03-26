@@ -5,39 +5,34 @@ import (
 	"errors"
 )
 
+// FoodBrands is a component of the 'food_brands.get' API response data
 type FoodBrands struct {
 	Brands []string `json:"food_brand"`
 }
 
+// FoodBrandsResponse is the response format of the 'food_brands.get' API call
 type FoodBrandsResponse struct {
 	Brands *FoodBrands    `json:"food_brands,omitempty"`
 	Error  *ErrorResponse `json:"error,omitempty"`
 }
 
+// BrandType is the enum type
 type BrandType int
 
 const (
-	// food brand types
+	// BrandTypeManufacturer is for the 'manufacturer' API brand type
 	BrandTypeManufacturer BrandType = iota
+	// BrandTypeRestaurant is for the 'restaurant' API brand type
 	BrandTypeRestaurant
+	// BrandTypeSupermarket is for the 'supermarket' API brand type
 	BrandTypeSupermarket
 )
 
 // FoodBrandsByType invokes the FatSecret 'food_brands.get' API call using
 // the 'brand_type' parameter and returns the response as a slice of brand strings
 func (c *Client) FoodBrandsByType(brandType BrandType) ([]string, error) {
-	// determine the brand type name
-	var name string
-	switch brandType {
-	case BrandTypeManufacturer:
-		name = "manufacturer"
-	case BrandTypeRestaurant:
-		name = "restaurant"
-	case BrandTypeSupermarket:
-		name = "supermarket"
-	default:
-		name = "manufacturer"
-	}
+	// get the brand type name string
+	name := brandTypeName(brandType)
 
 	// invoke the api call
 	body, err := c.InvokeAPI(
@@ -92,4 +87,25 @@ func (c *Client) FoodBrandsStartingWith(startsWith string) ([]string, error) {
 	}
 
 	return brandsResp.Brands.Brands, nil
+}
+
+// brandTypeName converts the given enum type into the
+// associated string name
+func brandTypeName(brandType BrandType) string {
+	// determine the brand type name
+	var name string
+	switch brandType {
+	case BrandTypeManufacturer:
+		name = "manufacturer"
+	case BrandTypeRestaurant:
+		name = "restaurant"
+	case BrandTypeSupermarket:
+		name = "supermarket"
+	default:
+		// use 'manufacturer' by default, like the API does
+		name = "manufacturer"
+	}
+
+	// return the brand type name
+	return name
 }

@@ -6,7 +6,7 @@ The following environment variables must be set in order to use the
 FatSecret API...
 
 1) "FATSECRET_CONSUMER_KEY"
-2) "FATSECRET_SHARED_SECRET"
+2) "FATSECRET_CONSUMER_SECRET"
 
 */
 
@@ -23,7 +23,7 @@ import (
 
 var (
 	consumerKey  = os.Getenv("FATSECRET_CONSUMER_KEY")
-	sharedSecret = os.Getenv("FATSECRET_SHARED_SECRET")
+	sharedSecret = os.Getenv("FATSECRET_CONSUMER_SECRET")
 )
 
 func main() {
