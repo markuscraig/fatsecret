@@ -143,8 +143,9 @@ func (c *Client) buildURL(apiMethod string, params map[string]string) (string, e
 
 // escape the given string using url-escape plus some extras
 func sigEscape(s string) string {
-	s = url.QueryEscape(s)
 	s = strings.Replace(s, "%7E", "~", -1)
+	s = strings.Replace(s, "%7e", "~", -1)
+	s = url.QueryEscape(s)
 	s = strings.Replace(s, "+", "%20", -1)
 	s = strings.Replace(s, "!", "%21", -1)
 	s = strings.Replace(s, "\\", "%27", -1)
